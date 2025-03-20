@@ -1,100 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulario PostgreSQL</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-      }
-      form {
-        max-width: 600px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-      label {
-        font-weight: bold;
-      }
-      input,
-      select {
-        padding: 8px;
-        font-size: 14px;
-      }
-      .readonly {
-        background-color: #f0f0f0;
-      }
-    </style>
+    <title>Formulario de Registro</title>
   </head>
   <body>
     <h1>Formulario de Registro</h1>
-    <form action="/submit" method="post">
-      <label for="clave">Clave P:</label>
-      <input
-        type="text"
-        id="clave"
-        name="clave"
-        required
-        readonly
-        class="readonly"
-      />
 
-      <label for="persona">Persona (Nombre):</label>
-      <input type="text" id="persona" name="persona" maxlength="300" required />
+    <form action="/" method="POST">
+      <fieldset>
+        <legend>Registro de Persona</legend>
 
-      <label for="calle">Calle:</label>
-      <input type="text" id="calle" name="calle" maxlength="200" required />
+        <label for="id_persona">ID Persona:</label>
+        <input
+          type="text"
+          id="id_persona"
+          name="id_persona"
+          maxlength="10"
+        /><br /><br />
 
-      <label for="no_ext">No. Ext:</label>
-      <input type="text" id="no_ext" name="no_ext" maxlength="50" />
+        <button type="submit" name="buscar_persona">Buscar Persona</button
+        ><br /><br />
 
-      <label for="no_int">No. Int:</label>
-      <input type="text" id="no_int" name="no_int" maxlength="50" />
+        <label for="persona">Nombre:</label>
+        <input
+          type="text"
+          id="persona"
+          name="persona"
+          maxlength="300"
+          value="{{ persona }}"
+        /><br /><br />
 
-      <label for="cp">C.P.:</label>
-      <input type="text" id="cp" name="cp" maxlength="5" required />
+        <label for="calle">Calle:</label>
+        <input
+          type="text"
+          id="calle"
+          name="calle"
+          maxlength="200"
+          value="{{ calle }}"
+        /><br /><br />
 
-      <label for="colonia">Colonia:</label>
-      <select id="colonia" name="colonia">
-        <option value="">Seleccione una opción</option>
-        <!-- Agregar opciones dinámicamente desde la base de datos -->
-      </select>
+        <label for="no_ext">No. Ext:</label>
+        <input
+          type="text"
+          id="no_ext"
+          name="no_ext"
+          maxlength="50"
+          value="{{ no_ext }}"
+        /><br /><br />
 
-      <label for="municipio">Municipio:</label>
-      <input
-        type="text"
-        id="municipio"
-        name="municipio"
-        maxlength="200"
-        required
-      />
+        <label for="no_int">No. Int:</label>
+        <input
+          type="text"
+          id="no_int"
+          name="no_int"
+          maxlength="50"
+          value="{{ no_int }}"
+        /><br /><br />
 
-      <label for="ciudad">Ciudad:</label>
-      <input
-        type="text"
-        id="ciudad"
-        name="ciudad"
-        maxlength="200"
-        required
-        readonly
-        class="readonly"
-      />
+        <label for="cp">C.P.:</label>
+        <input
+          type="text"
+          id="cp"
+          name="cp"
+          maxlength="10"
+          value="{{ cp }}"
+        /><br /><br />
 
-      <label for="estado">Estado:</label>
-      <input
-        type="text"
-        id="estado"
-        name="estado"
-        maxlength="200"
-        required
-        readonly
-        class="readonly"
-      />
+        <button type="submit" name="buscar_ubicacion">Buscar Ubicación</button
+        ><br /><br />
 
-      <button type="submit">Enviar</button>
+        <label for="colonia">Colonia:</label>
+        <select id="colonia" name="colonia">
+          <option value="">Seleccione una opción</option>
+          {% for colonia in colonias %}
+          <option value="{{ colonia }}">{{ colonia }}</option>
+          {% endfor %}</select
+        ><br /><br />
+
+        <label for="municipio">Municipio:</label>
+        <input
+          type="text"
+          id="municipio"
+          name="municipio"
+          maxlength="200"
+          value="{{ municipio }}"
+          readonly
+        /><br /><br />
+
+        <label for="ciudad">Ciudad:</label>
+        <input
+          type="text"
+          id="ciudad"
+          name="ciudad"
+          maxlength="200"
+          value="{{ ciudad }}"
+          readonly
+        /><br /><br />
+
+        <label for="estado">Estado:</label>
+        <input
+          type="text"
+          id="estado"
+          name="estado"
+          maxlength="200"
+          value="{{ estado }}"
+          readonly
+        /><br /><br />
+      </fieldset>
+
+      <button type="submit" name="enviar_registro">Enviar Registro</button>
     </form>
+
+    {% if mensaje %}
+    <p>{{ mensaje }}</p>
+    {% endif %}
   </body>
 </html>
