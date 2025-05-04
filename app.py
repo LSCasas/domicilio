@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 DATABASE_URL = "postgres://postgres@localhost:5432/domicilio"
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     cp = None
@@ -18,7 +19,7 @@ def index():
     no_ext = ""
     no_int = ""
 
-    # Buscar persona por ID
+    # Search person by ID
     if request.method == 'POST' and 'buscar_persona' in request.form:
         id_persona = request.form.get('id_persona')
         if id_persona:
@@ -48,10 +49,10 @@ def index():
                 print(f"Error al obtener persona: {e}")
                 mensaje = "Error al buscar la persona."
 
-    # Buscar ubicación por C.P.
+    # Search location by ZIP code
     if request.method == 'POST' and 'buscar_ubicacion' in request.form:
         cp = request.form.get('cp')
-        if cp and len(cp) == 5:  
+        if cp and len(cp) == 5:
             try:
                 conn = psycopg2.connect(DATABASE_URL)
                 cursor = conn.cursor()
@@ -71,7 +72,7 @@ def index():
                 conn.close()
 
                 if resultados:
-                    colonias = list(set(row[0] for row in resultados))  # Evita duplicados
+                    colonias = list(set(row[0] for row in resultados))
                     municipio = resultados[0][1]
                     ciudad = resultados[0][2]
                     estado = resultados[0][3]
@@ -81,7 +82,7 @@ def index():
                 print(f"Error al conectar con la base de datos: {e}")
                 return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
 
- # Procesar el formulario de registro de persona
+ # Process person registration form
     if request.method == 'POST' and 'enviar_registro' in request.form:
         nombre = request.form.get('persona')
         calle = request.form.get('calle')
@@ -93,22 +94,21 @@ def index():
         try:
             conn = psycopg2.connect(DATABASE_URL)
             cursor = conn.cursor()
-            
-            
+
             cursor.execute("""
                 SELECT id_colonia FROM colonias WHERE descripcion = %s LIMIT 1
             """, (colonia,))
             id_colonia = cursor.fetchone()
 
             if id_colonia:
-               
+
                 cursor.execute("""
                     INSERT INTO personas (nombre, calle, ne, ni, cp, id_colonia)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, (nombre, calle, no_ext, no_int, cp, id_colonia[0]))
                 conn.commit()
                 mensaje = "Persona registrada exitosamente."
-                
+
             cursor.close()
             conn.close()
 
@@ -117,5 +117,7 @@ def index():
             mensaje = "Error al registrar la persona."
 
     return render_template('index.html', cp=cp, colonias=colonias, municipio=municipio, ciudad=ciudad, estado=estado, persona=persona, calle=calle, no_ext=no_ext, no_int=no_int, mensaje=mensaje)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
